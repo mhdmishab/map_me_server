@@ -16,10 +16,8 @@ export const searchKeyword = async (req, res, next) => {
             const { lat, lon, display_name } = data[0];
             console.log(lat, lon, display_name);
 
-            // Save search term to user's searchKeywords
             const user = await User.findById(userId);
             if (user) {
-                // Check if the placeName already exists in searchKeywords
                 const exists = user.searchKeywords.some(sk => sk.placeName === display_name);
                 if (!exists) {
                     user.searchKeywords.push({ placeName: display_name, lon, lat });

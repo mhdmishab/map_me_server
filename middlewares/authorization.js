@@ -10,7 +10,6 @@ const authorization = (req, res, next) => {
         const decoded = jwt.verify(token.split(' ')[1], jwtsecret);
         if (decoded) {
             req.user = decoded;
-            // console.log(req.user)
             next();
         }
     } catch (error) {
