@@ -49,7 +49,7 @@ export const register = async (req, res, next) => {
         await newUser.save();
         
         await mailVerify(email);
-        res.status(403).json({ message: 'User registered successfully. Please check your email for the verification link.' });
+        res.status(403).json({ message: 'User registered successfully. Please check your email for the verification link.', email  });
     } catch (error) {
         next(error);
     }
@@ -71,13 +71,13 @@ export const login = async (req, res, next) => {
 
         if (!user.isVerified) {
             await mailVerify(user.email);
-            return res.status(403).json({ message: 'Email not verified. Please verify your email.' });
+            return res.status(403).json({ message: 'Email not verified. Please verify your email.',email:user.email });
         }
 
         const jwtsecret = process.env.JWT_SECRET || 'default_secret';
-        const token = jwt.sign({ id: user._id, email: user.email }, jwtsecret, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id, email: user.email }, jwtsecret, );
 
-        res.status(200).json({ message: 'Login successful', token });
+        res.status(200).json({ message: 'Login successful', token, userId:user._id });
     } catch (error) {
         next(error);
     }
@@ -101,5 +101,22 @@ export const verifyEmail = async (req, res, next) => {
         next(error);
     }
 };
+
+export const resendMail=async(req,res,next)=>{
+ try {
+    const {email} =req.query;
+    
+    const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+    
+    mailVerify(email);
+    res.status(200).json({ message: 'Mail verification resent'});
+    
+ } catch (error) {
+    next(error);
+ }
+}
 
 
