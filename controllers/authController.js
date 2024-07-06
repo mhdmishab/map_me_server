@@ -10,7 +10,8 @@ const mailVerify = async (email) => {
         const jwtsecret = process.env.JWT_SECRET_MAIL || 'default_secret';
         const token = jwt.sign({ email }, jwtsecret, { expiresIn: '1h' });
 
-        const verificationUrl = `http://localhost:3000/api/auth/verifyemail?token=${token}`;
+        // const verificationUrl = `http://localhost:3000/api/auth/verifyemail?token=${token}`;
+        const verificationUrl = `https://map-me-server.onrender.com/api/auth/verifyemail?token=${token}`;
 
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -96,7 +97,8 @@ export const verifyEmail = async (req, res, next) => {
             return res.status(404).json({ message: 'User not found.' });
         }
 
-        res.redirect("http://localhost:5173/login");
+        // res.redirect("http://localhost:5173/login");
+        res.redirect("https://mapmee.netlify.app");
     } catch (error) {
         next(error);
     }
